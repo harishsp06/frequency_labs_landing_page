@@ -3,583 +3,618 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Frequency Labs</title>
+  <title>Frequency Labs — AI Prompts from Real Conversation</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #09090b;
-      --surface: #111113;
-      --border: #1f1f23;
-      --accent: #7c3aed;
-      --accent-light: #a78bfa;
-      --accent-glow: rgba(124, 58, 237, 0.35);
-      --text: #fafafa;
-      --muted: #a1a1aa;
-      --muted2: #52525b;
+      --black: #000;
+      --surface: #0a0a0a;
+      --border: rgba(255,255,255,0.08);
+      --accent: #6ee7b7;       /* teal-green — audio/voice space signature */
+      --accent2: #34d399;
+      --accent-dim: rgba(110,231,183,0.12);
+      --text: #fff;
+      --muted: rgba(255,255,255,0.5);
+      --muted2: rgba(255,255,255,0.2);
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      background: var(--bg);
+      background: var(--black);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      line-height: 1.6;
-      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* NAV */
+    /* ── NAV ── */
     nav {
       position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 100;
+      top: 0; left: 0; right: 0;
+      z-index: 999;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.1rem 2.5rem;
-      background: rgba(9, 9, 11, 0.8);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 2.5rem;
     }
 
     .logo {
-      font-size: 1.15rem;
+      font-size: 0.95rem;
       font-weight: 700;
-      letter-spacing: -0.02em;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
       color: var(--text);
       text-decoration: none;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.55rem;
     }
 
-    .logo-dot {
-      width: 8px;
-      height: 8px;
+    .live-dot {
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: var(--accent);
-      box-shadow: 0 0 10px var(--accent);
-      animation: pulse 2s ease-in-out infinite;
+      box-shadow: 0 0 8px var(--accent);
+      animation: blink 1.8s ease-in-out infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(0.8); }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
     }
 
-    nav a.cta-sm {
-      font-size: 0.875rem;
+    .nav-cta {
+      font-size: 0.8rem;
       font-weight: 600;
-      color: var(--text);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--black);
       background: var(--accent);
-      padding: 0.45rem 1.1rem;
-      border-radius: 6px;
+      padding: 0.5rem 1.2rem;
+      border-radius: 4px;
       text-decoration: none;
-      transition: opacity 0.2s;
+      transition: opacity 0.15s;
     }
+    .nav-cta:hover { opacity: 0.85; }
 
-    nav a.cta-sm:hover { opacity: 0.85; }
-
-    /* HERO */
-    .hero {
+    /* ── SECTIONS ── */
+    .page {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
       padding: 6rem 1.5rem 4rem;
       position: relative;
+      overflow: hidden;
     }
 
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 70% 55% at 50% 40%, rgba(124, 58, 237, 0.18) 0%, transparent 70%);
-      pointer-events: none;
+    /* ── PAGE 1: HERO ── */
+    #hero {
+      text-align: center;
     }
 
-    .badge {
+    .hero-eyebrow {
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      font-size: 0.78rem;
+      gap: 0.5rem;
+      font-size: 0.72rem;
       font-weight: 600;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--accent-light);
-      background: rgba(124, 58, 237, 0.12);
-      border: 1px solid rgba(124, 58, 237, 0.3);
-      padding: 0.35rem 0.9rem;
-      border-radius: 999px;
-      margin-bottom: 1.75rem;
-    }
-
-    .badge-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent-light);
-      animation: pulse 1.5s ease-in-out infinite;
+      color: var(--accent);
+      margin-bottom: 2rem;
     }
 
     h1 {
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
-      font-weight: 800;
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      font-weight: 900;
       letter-spacing: -0.04em;
-      line-height: 1.1;
-      max-width: 760px;
-      margin-bottom: 1.5rem;
+      line-height: 0.95;
+      max-width: 900px;
+      margin-bottom: 1.75rem;
     }
 
-    h1 span {
-      background: linear-gradient(135deg, var(--accent-light) 0%, #c084fc 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    h1 em {
+      font-style: normal;
+      color: var(--accent);
     }
 
     .hero-sub {
-      font-size: clamp(1rem, 2vw, 1.2rem);
+      font-size: clamp(0.95rem, 1.8vw, 1.15rem);
       color: var(--muted);
-      max-width: 540px;
-      margin-bottom: 2.75rem;
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
     }
 
-    .hero-ctas {
+    .hero-actions {
       display: flex;
       gap: 1rem;
-      flex-wrap: wrap;
       justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 3.5rem;
     }
 
-    .btn-primary {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #fff;
-      background: var(--accent);
-      padding: 0.75rem 1.75rem;
-      border-radius: 8px;
+    .btn {
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
       text-decoration: none;
+      padding: 0.85rem 2rem;
+      border-radius: 4px;
+      transition: all 0.15s;
       border: none;
       cursor: pointer;
-      transition: box-shadow 0.2s, transform 0.15s;
-      box-shadow: 0 0 0 0 var(--accent-glow);
     }
 
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 32px var(--accent-glow);
+    .btn-fill {
+      background: var(--accent);
+      color: #000;
     }
+    .btn-fill:hover { opacity: 0.85; }
 
-    .btn-secondary {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text);
+    .btn-outline {
       background: transparent;
-      padding: 0.75rem 1.75rem;
-      border-radius: 8px;
-      text-decoration: none;
+      color: var(--muted);
       border: 1px solid var(--border);
-      transition: border-color 0.2s, background 0.2s;
     }
+    .btn-outline:hover { border-color: var(--muted2); color: var(--text); }
 
-    .btn-secondary:hover {
-      border-color: var(--muted2);
-      background: var(--surface);
+    /* Privacy pill on hero */
+    .privacy-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      letter-spacing: 0.02em;
     }
+    .privacy-hero svg { color: var(--accent); flex-shrink: 0; }
 
-    /* WAVEFORM VISUAL */
-    .wave-container {
-      margin-top: 4rem;
+    /* WAVEFORM */
+    .waveform {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      height: 52px;
+      gap: 3px;
+      height: 60px;
+      margin: 3rem auto 0;
     }
 
-    .wave-bar {
-      width: 4px;
+    .bar {
+      width: 3px;
       border-radius: 2px;
       background: var(--accent);
-      animation: wave 1.2s ease-in-out infinite;
-      opacity: 0.7;
+      animation: wave 1.4s ease-in-out infinite;
+      opacity: 0.6;
     }
 
     @keyframes wave {
-      0%, 100% { height: 8px; }
-      50% { height: 48px; }
+      0%, 100% { height: 6px; }
+      50% { height: 52px; }
     }
 
-    .wave-bar:nth-child(1)  { animation-delay: 0s; }
-    .wave-bar:nth-child(2)  { animation-delay: 0.1s; }
-    .wave-bar:nth-child(3)  { animation-delay: 0.2s; }
-    .wave-bar:nth-child(4)  { animation-delay: 0.3s; }
-    .wave-bar:nth-child(5)  { animation-delay: 0.2s; }
-    .wave-bar:nth-child(6)  { animation-delay: 0.1s; }
-    .wave-bar:nth-child(7)  { animation-delay: 0s; }
-    .wave-bar:nth-child(8)  { animation-delay: 0.15s; }
-    .wave-bar:nth-child(9)  { animation-delay: 0.25s; }
-    .wave-bar:nth-child(10) { animation-delay: 0.35s; }
-    .wave-bar:nth-child(11) { animation-delay: 0.25s; }
-    .wave-bar:nth-child(12) { animation-delay: 0.15s; }
+    /* stagger delays for natural look */
+    .bar:nth-child(1)  { animation-delay: 0.00s; }
+    .bar:nth-child(2)  { animation-delay: 0.07s; }
+    .bar:nth-child(3)  { animation-delay: 0.14s; }
+    .bar:nth-child(4)  { animation-delay: 0.21s; }
+    .bar:nth-child(5)  { animation-delay: 0.28s; }
+    .bar:nth-child(6)  { animation-delay: 0.35s; }
+    .bar:nth-child(7)  { animation-delay: 0.42s; }
+    .bar:nth-child(8)  { animation-delay: 0.35s; }
+    .bar:nth-child(9)  { animation-delay: 0.28s; }
+    .bar:nth-child(10) { animation-delay: 0.21s; }
+    .bar:nth-child(11) { animation-delay: 0.14s; }
+    .bar:nth-child(12) { animation-delay: 0.07s; }
+    .bar:nth-child(13) { animation-delay: 0.00s; }
+    .bar:nth-child(14) { animation-delay: 0.09s; }
+    .bar:nth-child(15) { animation-delay: 0.18s; }
+    .bar:nth-child(16) { animation-delay: 0.27s; }
+    .bar:nth-child(17) { animation-delay: 0.36s; }
+    .bar:nth-child(18) { animation-delay: 0.27s; }
+    .bar:nth-child(19) { animation-delay: 0.18s; }
+    .bar:nth-child(20) { animation-delay: 0.09s; }
 
-    /* HOW IT WORKS */
-    section {
-      padding: 6rem 1.5rem;
-      max-width: 1100px;
-      margin: 0 auto;
+    /* soft glow under waveform */
+    .waveform::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      width: 200px;
+      height: 40px;
+      background: radial-gradient(ellipse, rgba(110,231,183,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* scroll hint */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--muted2);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      animation: fadeup 2s ease-in-out infinite;
+    }
+
+    @keyframes fadeup {
+      0%, 100% { opacity: 0.3; transform: translateX(-50%) translateY(0); }
+      50% { opacity: 0.8; transform: translateX(-50%) translateY(-4px); }
+    }
+
+    .scroll-hint svg { width: 16px; height: 16px; }
+
+    /* ── PAGE 2: HOW IT WORKS ── */
+    #how {
+      border-top: 1px solid var(--border);
     }
 
     .section-label {
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--accent-light);
-      margin-bottom: 0.75rem;
-    }
-
-    h2 {
-      font-size: clamp(1.75rem, 4vw, 2.75rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
+      color: var(--accent);
       margin-bottom: 1rem;
     }
 
+    h2 {
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 1rem;
+      max-width: 700px;
+    }
+
     .section-sub {
+      font-size: 1rem;
       color: var(--muted);
-      font-size: 1.05rem;
-      max-width: 520px;
-      margin-bottom: 3.5rem;
+      max-width: 440px;
+      line-height: 1.7;
+      margin-bottom: 4rem;
     }
 
     .steps {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      width: 100%;
+      max-width: 860px;
     }
 
     .step {
       background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 2rem;
+      padding: 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
       position: relative;
-      overflow: hidden;
-      transition: border-color 0.2s, transform 0.2s;
+      transition: background 0.2s;
     }
+    .step:hover { background: #111; }
 
-    .step:hover {
-      border-color: var(--accent);
-      transform: translateY(-3px);
-    }
-
-    .step::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .step:hover::before { opacity: 1; }
-
-    .step-number {
-      font-size: 0.72rem;
+    .step-num {
+      font-size: 0.65rem;
       font-weight: 700;
-      letter-spacing: 0.1em;
-      color: var(--accent-light);
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      margin-bottom: 1rem;
+      color: var(--accent);
     }
 
     .step-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
+      font-size: 1.6rem;
+      line-height: 1;
     }
 
     .step h3 {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 700;
-      margin-bottom: 0.5rem;
       letter-spacing: -0.02em;
     }
 
     .step p {
-      font-size: 0.925rem;
+      font-size: 0.875rem;
       color: var(--muted);
       line-height: 1.65;
     }
 
-    /* FEATURES */
-    .features-section {
-      padding: 6rem 1.5rem;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .features-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .feature-card {
-      padding: 1.75rem;
+    /* Privacy block */
+    .privacy-block {
+      margin-top: 1.5rem;
+      width: 100%;
+      max-width: 860px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(110,231,183,0.2);
       border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      transition: border-color 0.2s;
-    }
-
-    .feature-card:hover { border-color: var(--muted2); }
-
-    .feature-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      background: rgba(124, 58, 237, 0.15);
+      padding: 1.75rem 2rem;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
+      align-items: flex-start;
+      gap: 1.25rem;
     }
 
-    .feature-card h3 {
+    .privacy-icon {
+      font-size: 1.75rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .privacy-block h3 {
       font-size: 1rem;
       font-weight: 700;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.35rem;
+      color: var(--accent);
     }
 
-    .feature-card p {
-      font-size: 0.9rem;
+    .privacy-block p {
+      font-size: 0.875rem;
       color: var(--muted);
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
-    /* CTA SECTION */
-    .cta-section {
-      padding: 7rem 1.5rem;
+    .privacy-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.85rem;
+    }
+
+    .pill {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      background: rgba(110,231,183,0.1);
+      border: 1px solid rgba(110,231,183,0.25);
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+    }
+
+    @media (max-width: 680px) {
+      .steps { grid-template-columns: 1fr; }
+    }
+
+    /* ── PAGE 3: WAITLIST ── */
+    #waitlist {
+      border-top: 1px solid var(--border);
       text-align: center;
-      position: relative;
+      background: var(--surface);
     }
 
-    .cta-section::before {
+    #waitlist::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(124, 58, 237, 0.12) 0%, transparent 70%);
+      background: radial-gradient(ellipse 70% 60% at 50% 100%, rgba(110,231,183,0.07) 0%, transparent 70%);
       pointer-events: none;
     }
 
-    .cta-section h2 { margin-bottom: 1rem; }
+    #waitlist h2 { max-width: 600px; margin: 0 auto 1rem; }
 
-    .cta-section p {
-      color: var(--muted);
-      font-size: 1.05rem;
-      max-width: 460px;
-      margin: 0 auto 2.5rem;
+    #waitlist .section-sub {
+      margin: 0 auto 2.75rem;
     }
 
-    .email-form {
+    .form-wrap {
       display: flex;
-      gap: 0.75rem;
+      gap: 0.6rem;
       justify-content: center;
       flex-wrap: wrap;
       max-width: 480px;
-      margin: 0 auto;
+      margin: 0 auto 2rem;
     }
 
-    .email-form input {
+    .form-wrap input[type="email"] {
       flex: 1;
       min-width: 220px;
-      padding: 0.75rem 1.1rem;
-      background: var(--surface);
+      padding: 0.85rem 1.1rem;
+      background: #111;
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 4px;
       color: var(--text);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       outline: none;
       transition: border-color 0.2s;
     }
 
-    .email-form input::placeholder { color: var(--muted2); }
+    .form-wrap input[type="email"]::placeholder { color: var(--muted2); }
+    .form-wrap input[type="email"]:focus { border-color: var(--accent); }
 
-    .email-form input:focus { border-color: var(--accent); }
+    .trust-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
 
-    /* FOOTER */
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--muted2);
+    }
+
+    .trust-item span { color: var(--accent); font-size: 0.85rem; }
+
+    /* ── FOOTER ── */
     footer {
       border-top: 1px solid var(--border);
-      padding: 2rem 2.5rem;
+      padding: 1.5rem 2.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: 0.75rem;
     }
 
-    footer .logo { font-size: 1rem; }
-
-    footer p {
-      font-size: 0.85rem;
-      color: var(--muted2);
-    }
+    footer p { font-size: 0.78rem; color: var(--muted2); }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <a href="#" class="logo">
-      <span class="logo-dot"></span>
-      Frequency Labs
-    </a>
-    <a href="#waitlist" class="cta-sm">Join Waitlist</a>
-  </nav>
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="logo">
+    <span class="live-dot"></span>
+    Frequency Labs
+  </a>
+  <a href="#waitlist" class="nav-cta">Get Access</a>
+</nav>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="badge">
-      <span class="badge-dot"></span>
-      Now in early access
-    </div>
-    <h1>Your ideas, turned into<br /><span>perfect AI prompts</span></h1>
-    <p class="hero-sub">
-      Frequency Labs listens to your conversation, extracts the signal, and crafts precise AI prompts — so you spend less time typing and more time building.
-    </p>
-    <div class="hero-ctas">
-      <a href="#waitlist" class="btn-primary">Get Early Access</a>
-      <a href="#how-it-works" class="btn-secondary">See How It Works</a>
-    </div>
-    <div class="wave-container">
-      <div class="wave-bar"></div>
-      <div class="wave-bar"></div>
-      <div class="wave-bar"></div>
-      <div class="wave-bar"></div>
-      <div class="wave-bar"></div>
-      <div class="wave-bar"></div>
-      <div class="wave-bar"></div>
-      <div class="wave-bar"></div>
-      <div class="wave-bar"></div>
-      <div class="wave-bar"></div>
-      <div class="wave-bar"></div>
-      <div class="wave-bar"></div>
-    </div>
-  </section>
+<!-- ═══════════════════════════════════════
+     PAGE 1 — HERO
+════════════════════════════════════════ -->
+<section class="page" id="hero">
 
-  <!-- HOW IT WORKS -->
-  <section id="how-it-works">
-    <p class="section-label">How it works</p>
-    <h2>Speak. Parse. Prompt. Send.</h2>
-    <p class="section-sub">Three steps from a raw idea to a polished AI-ready prompt.</p>
-    <div class="steps">
-      <div class="step">
-        <p class="step-number">Step 01</p>
-        <div class="step-icon">🎙️</div>
-        <h3>Say Your Idea</h3>
-        <p>Talk naturally. Explain your idea, problem, or request as you would to a colleague. No special syntax or formatting required.</p>
-      </div>
-      <div class="step">
-        <p class="step-number">Step 02</p>
-        <div class="step-icon">⚡</div>
-        <h3>Automatic Parsing</h3>
-        <p>Frequency Labs listens, identifies the intent, extracts key context, constraints, and goals from your conversation in real time.</p>
-      </div>
-      <div class="step">
-        <p class="step-number">Step 03</p>
-        <div class="step-icon">🚀</div>
-        <h3>Send to AI</h3>
-        <p>Review the generated prompt, make quick edits if needed, then fire it directly to your preferred AI model — all in one flow.</p>
-      </div>
-    </div>
-  </section>
+  <p class="hero-eyebrow">
+    <span class="live-dot"></span>
+    Early Access Open
+  </p>
 
-  <!-- FEATURES -->
-  <div class="features-section">
-    <div class="features-inner">
-      <p class="section-label">Features</p>
-      <h2>Built for how people actually think</h2>
-      <p class="section-sub" style="margin-bottom: 3rem;">Ideas are messy. Prompts need to be precise. Frequency bridges that gap.</p>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">🎤</div>
-          <h3>Real-time Listening</h3>
-          <p>Captures your spoken or typed thoughts as you have them — no copy-pasting or reformatting later.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🧠</div>
-          <h3>Smart Context Extraction</h3>
-          <p>Understands intent, tone, and technical requirements from natural language so nothing important gets lost.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">✍️</div>
-          <h3>Prompt Engineering Built In</h3>
-          <p>Applies proven prompt patterns automatically — role, context, constraints, output format — so your results are consistently great.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📡</div>
-          <h3>Send to Any AI</h3>
-          <p>Route your prompt to ChatGPT, Claude, Gemini, or any API-compatible model without leaving the app.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔁</div>
-          <h3>Iterative Refinement</h3>
-          <p>Keep talking. Frequency updates the prompt live as your idea evolves — no starting from scratch.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔒</div>
-          <h3>Private by Default</h3>
-          <p>Your conversations are processed locally first. We don't store audio or sell your data. Ever.</p>
-        </div>
+  <h1>Speak your idea.<br /><em>Send the prompt.</em></h1>
+
+  <p class="hero-sub">
+    Frequency listens to your conversation, parses your intent, and crafts a precise AI prompt — ready to send in seconds.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#waitlist" class="btn btn-fill">Join the Waitlist</a>
+    <a href="#how" class="btn btn-outline">See How It Works</a>
+  </div>
+
+  <div class="privacy-hero">
+    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Audio never leaves your device
+  </div>
+
+  <div class="waveform" style="position:relative;">
+    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    <div class="bar"></div><div class="bar"></div>
+  </div>
+
+  <div class="scroll-hint">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════
+     PAGE 2 — HOW IT WORKS
+════════════════════════════════════════ -->
+<section class="page" id="how">
+
+  <p class="section-label">How it works</p>
+  <h2>Three steps from idea to AI.</h2>
+  <p class="section-sub">No typing, no reformatting. Just talk — Frequency handles the rest.</p>
+
+  <div class="steps">
+    <div class="step">
+      <p class="step-num">01</p>
+      <div class="step-icon">🎙️</div>
+      <h3>Listen</h3>
+      <p>Talk naturally. Explain your idea exactly how it comes to you — no structure needed.</p>
+    </div>
+    <div class="step">
+      <p class="step-num">02</p>
+      <div class="step-icon">⚡</div>
+      <h3>Parse</h3>
+      <p>Frequency extracts your intent, context, and constraints in real time — turning raw thought into structured signal.</p>
+    </div>
+    <div class="step">
+      <p class="step-num">03</p>
+      <div class="step-icon">🚀</div>
+      <h3>Send</h3>
+      <p>Review your polished prompt and fire it to any AI model — Claude, GPT, Gemini — instantly.</p>
+    </div>
+  </div>
+
+  <div class="privacy-block">
+    <div class="privacy-icon">🔒</div>
+    <div>
+      <h3>Privacy is not a feature. It's the foundation.</h3>
+      <p>All audio processing happens on your device. Nothing is recorded, stored, or sent to our servers. We built Frequency this way from day one — because your conversations are yours.</p>
+      <div class="privacy-pills">
+        <span class="pill">On-device processing</span>
+        <span class="pill">No audio storage</span>
+        <span class="pill">No data sold</span>
+        <span class="pill">Zero cloud recording</span>
       </div>
     </div>
   </div>
 
-  <!-- WAITLIST CTA -->
-  <section class="cta-section" id="waitlist">
-    <p class="section-label">Early Access</p>
-    <h2>Be the first to use Frequency</h2>
-    <p>Join the waitlist and get notified when we open up early access. No spam — just a single email when you're in.</p>
-    <form class="email-form" onsubmit="handleSubmit(event)">
-      <input type="email" placeholder="you@example.com" required />
-      <button type="submit" class="btn-primary">Notify Me</button>
-    </form>
-  </section>
+</section>
 
-  <!-- FOOTER -->
-  <footer>
-    <a href="#" class="logo">
-      <span class="logo-dot"></span>
-      Frequency Labs
-    </a>
-    <p>© 2026 Frequency Labs. All rights reserved.</p>
-  </footer>
+<!-- ═══════════════════════════════════════
+     PAGE 3 — WAITLIST
+════════════════════════════════════════ -->
+<section class="page" id="waitlist">
 
-  <script>
-    function handleSubmit(e) {
-      e.preventDefault();
-      const btn = e.target.querySelector('button');
-      const input = e.target.querySelector('input');
-      btn.textContent = "You're on the list!";
-      btn.style.background = '#16a34a';
-      input.disabled = true;
-      btn.disabled = true;
-    }
-  </script>
+  <p class="section-label">Early Access</p>
+  <h2>Be first to use Frequency.</h2>
+  <p class="section-sub">
+    We're opening early access to a small group. Drop your email and we'll reach out when your spot is ready.
+  </p>
+
+  <form class="form-wrap" onsubmit="handleSubmit(event)">
+    <input type="email" placeholder="you@example.com" required />
+    <button type="submit" class="btn btn-fill">Notify Me</button>
+  </form>
+
+  <div class="trust-row">
+    <div class="trust-item"><span>🔒</span> No spam, ever</div>
+    <div class="trust-item"><span>✓</span> One email when you're in</div>
+    <div class="trust-item"><span>✓</span> Unsubscribe anytime</div>
+  </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#hero" class="logo">
+    <span class="live-dot"></span>
+    Frequency Labs
+  </a>
+  <p>© 2026 Frequency Labs · Privacy First</p>
+</footer>
+
+<script>
+  function handleSubmit(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('button');
+    const input = form.querySelector('input');
+    btn.textContent = "You're on the list ✓";
+    btn.style.background = '#16a34a';
+    input.disabled = true;
+    btn.disabled = true;
+  }
+</script>
 
 </body>
 </html>
