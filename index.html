@@ -415,16 +415,15 @@
 
     .form-wrap {
       display: flex;
+      flex-direction: column;
       gap: 0.6rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      max-width: 480px;
+      width: 100%;
+      max-width: 380px;
       margin: 0 auto 2rem;
     }
 
-    .form-wrap input[type="email"] {
-      flex: 1;
-      min-width: 220px;
+    .form-wrap input {
+      width: 100%;
       padding: 0.85rem 1.1rem;
       background: #111;
       border: 1px solid var(--border);
@@ -435,8 +434,9 @@
       transition: border-color 0.2s;
     }
 
-    .form-wrap input[type="email"]::placeholder { color: var(--muted2); }
-    .form-wrap input[type="email"]:focus { border-color: var(--accent); }
+    .form-wrap input::placeholder { color: var(--muted2); }
+    .form-wrap input:focus { border-color: var(--accent); }
+    .form-wrap .btn { width: 100%; justify-content: center; }
 
     .trust-row {
       display: flex;
@@ -582,7 +582,8 @@
   </p>
 
   <form class="form-wrap" id="waitlist-form">
-    <input id="email-input" type="email" placeholder="you@example.com" required />
+    <input id="name-input" type="text" placeholder="Full name" required />
+    <input id="email-input" type="email" placeholder="Email address" required />
     <button type="submit" class="btn btn-fill">Notify Me</button>
   </form>
 
@@ -612,6 +613,7 @@
   const SHEETS_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
 
   const form       = document.getElementById('waitlist-form');
+  const nameInput  = document.getElementById('name-input');
   const emailInput = document.getElementById('email-input');
   const successMsg = document.getElementById('form-success');
   const errorMsg   = document.getElementById('form-error');
@@ -624,7 +626,15 @@
     errorMsg.style.display = 'none';
     errorMsg.textContent = '';
 
+    const name  = nameInput.value.trim();
     const email = emailInput.value.trim();
+
+    if (!name) {
+      errorMsg.textContent = 'Please enter your full name.';
+      errorMsg.style.display = 'block';
+      nameInput.focus();
+      return;
+    }
     if (!EMAIL_RE.test(email)) {
       errorMsg.textContent = 'Please enter a valid email address.';
       errorMsg.style.display = 'block';
@@ -636,6 +646,7 @@
     submitBtn.textContent = 'Sending...';
 
     const params = new URLSearchParams();
+    params.append('name', name);
     params.append('email', email);
 
     fetch(SHEETS_URL, { method: 'POST', mode: 'no-cors', body: params })
